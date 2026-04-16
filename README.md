@@ -1,36 +1,52 @@
 # NexusDownloader
 
-NexusDownloader is a full-stack media downloader built with React, Vite, FastAPI, and `yt-dlp`. It provides a clean browser interface for pasting a supported media link, choosing audio or video output, and downloading the processed file through a Python backend.
+```text
+┌──────────────────────────────────────────────────────────────────────────┐
+│                                                                          │
+│   ███╗   ██╗███████╗██╗  ██╗██╗   ██╗███████╗                            │
+│   ████╗  ██║██╔════╝╚██╗██╔╝██║   ██║██╔════╝                            │
+│   ██╔██╗ ██║█████╗   ╚███╔╝ ██║   ██║███████╗                            │
+│   ██║╚██╗██║██╔══╝   ██╔██╗ ██║   ██║╚════██║                            │
+│   ██║ ╚████║███████╗██╔╝ ██╗╚██████╔╝███████║                            │
+│   ╚═╝  ╚═══╝╚══════╝╚═╝  ╚═╝ ╚═════╝ ╚══════╝                            │
+│                                                                          │
+│              Full-Stack Media Downloader with React + FastAPI            │
+│                                                                          │
+└──────────────────────────────────────────────────────────────────────────┘
+```
+
+NexusDownloader is a full-stack media downloader that lets you paste a supported link, choose audio or video output, and download the processed file through a polished browser interface. The frontend is built with React and Vite, while the backend uses FastAPI and `yt-dlp` to fetch and serve the media.
 
 ## Overview
 
-This project is split into two parts:
+This project is built as a clean two-part application:
 
-- A modern frontend that handles user input, format selection, and download progress UI.
-- A FastAPI backend that receives the download request, processes the media with `yt-dlp`, and returns the file to the browser.
+- The **frontend** handles the user interface, form state, responsive layout, and download progress display.
+- The **backend** accepts download requests, processes the media with `yt-dlp`, and returns the generated file to the browser.
 
-The app is designed to be lightweight, responsive, and easy to run locally for development.
+The result is a lightweight and responsive local downloader that is easy to run, easy to extend, and visually polished.
 
 ## Purpose
 
-The purpose of NexusDownloader is to provide a simple and fast way to:
+The goal of NexusDownloader is to provide a simple workflow for:
 
-- Download supported media from a pasted link.
-- Convert or fetch audio and video in selected formats.
-- Show download status and progress in the interface.
-- Keep the workflow minimal for local development and testing.
+- Downloading supported media from a pasted URL.
+- Switching between video and audio output.
+- Choosing a format before the download starts.
+- Showing live download and processing status.
+- Keeping the setup minimal for local development.
 
 ## Features
 
-| Feature | Description |
+| Feature | What it does |
 |---|---|
-| Responsive UI | Works across desktop and mobile screen sizes.
-| Media type selection | Lets the user choose between audio and video.
-| Format selection | Supports multiple output formats depending on media type.
-| Download progress | Shows download, processing, and completion states.
-| Backend file response | Streams the generated file back to the browser.
-| Cross-origin support | Uses CORS settings for frontend and backend communication.
-| Modern interface | Built with a glassmorphism-style UI and animated feedback.
+| Responsive design | Adapts to mobile, tablet, and desktop screens.
+| Media type selector | Lets the user switch between audio and video.
+| Format selector | Provides output format choices based on the selected media type.
+| Progress states | Shows connecting, downloading, processing, done, and error states.
+| File response handling | Streams the finished file back to the browser as a download.
+| CORS support | Allows the frontend and backend to communicate locally or in deployment.
+| Modern UI | Uses a glass-style card layout, gradient accents, and subtle motion.
 
 ## Tech Stack
 
@@ -38,9 +54,9 @@ The purpose of NexusDownloader is to provide a simple and fast way to:
 |---|---|
 | Frontend | React 19, Vite, Tailwind CSS 4 |
 | Backend | FastAPI, Uvicorn, Pydantic |
-| Media processing | `yt-dlp` |
-| Styling | Tailwind utility classes, custom theme tokens |
-| Runtime | Node.js for frontend, Python for backend |
+| Media engine | `yt-dlp` |
+| Runtime | Node.js for the frontend, Python for the backend |
+| Styling | Tailwind utility classes and custom theme tokens |
 
 ## Project Structure
 
@@ -52,13 +68,13 @@ downloader/
 │   ├── downloads/
 │   └── ffmpeg.zip
 ├── frontend/
+│   ├── public/
 │   ├── src/
 │   │   ├── App.jsx
 │   │   ├── index.css
 │   │   ├── main.jsx
 │   │   └── components/
 │   │       └── DownloaderForm.jsx
-│   ├── public/
 │   ├── package.json
 │   ├── vite.config.js
 │   └── .gitignore
@@ -67,92 +83,100 @@ downloader/
 
 ## Frontend Setup
 
-### Prerequisites
+### Requirements
 
 - Node.js 18 or newer
 - npm
 
-### Install and run
+### Install dependencies
 
 ```bash
 cd frontend
 npm install
+```
+
+### Run the frontend
+
+```bash
 npm run dev
 ```
 
-The frontend will usually run at `http://localhost:5173`.
+The frontend will usually be available at `http://localhost:5173`.
 
-### Frontend environment variables
+### Optional frontend environment variable
 
-If your backend is deployed somewhere other than the default local URL, create a `frontend/.env` file and set:
+If your backend is running on a different URL, create a `frontend/.env` file:
 
 ```env
 VITE_API_BASE_URL=http://localhost:8000
 ```
 
-If `VITE_API_BASE_URL` is not set, the app falls back to `/api`.
+If this variable is not set, the app falls back to `/api`.
 
 ## Backend Setup
 
-### Prerequisites
+### Requirements
 
 - Python 3.10 or newer
 - `pip`
 
-### Install and run
+### Create a virtual environment
 
 ```bash
 cd backend
 python -m venv .venv
 ```
 
-Activate the virtual environment, then install dependencies:
+Activate the environment, then install the dependencies:
 
 ```bash
 pip install -r requirements.txt
+```
+
+### Run the backend
+
+```bash
 uvicorn main:app --reload
 ```
 
 The backend will usually run at `http://localhost:8000`.
 
-### Backend environment variables
+### Optional backend environment variable
 
-The backend supports a frontend origin setting for CORS:
+The backend supports a frontend origin for CORS:
 
 ```env
 FRONTEND_ORIGIN=http://localhost:5173
 ```
 
-If not set, the backend uses the default local frontend origin.
-
 ## How It Works
 
-1. The user pastes a supported media URL into the frontend.
-2. The user selects media type and format.
-3. The frontend sends a JSON request to the FastAPI backend.
-4. The backend uses `yt-dlp` to extract and download the media.
-5. The generated file is returned as a downloadable response.
-6. The frontend shows progress and final status to the user.
+1. Paste a supported media link into the form.
+2. Choose whether you want audio or video.
+3. Select the format you want to download.
+4. The frontend sends a request to the FastAPI backend.
+5. `yt-dlp` processes the media and prepares the output file.
+6. The backend returns the file and the browser starts the download.
 
 ## Useful Tips
 
-- Keep `.env` files out of version control and use `.env.example` for shared defaults.
-- Do not commit files in `backend/downloads/`; they are temporary runtime outputs.
-- If downloads fail, verify that `yt-dlp` is installed correctly and the URL is supported.
-- If the frontend cannot reach the backend, check `VITE_API_BASE_URL` and `FRONTEND_ORIGIN`.
-- When deploying, update the CORS origin to match the final frontend domain.
-- If you plan to use video conversion beyond the current default flow, make sure `ffmpeg` is available in your environment.
+- Keep `.env` files private and commit only `.env.example` files with safe placeholder values.
+- Do not commit `backend/downloads/` contents because they are generated at runtime.
+- If the frontend cannot reach the backend, confirm `VITE_API_BASE_URL` and `FRONTEND_ORIGIN` match your local ports.
+- If downloads fail, verify that the pasted URL is supported by `yt-dlp`.
+- If you want broader format conversion support, make sure `ffmpeg` is installed and available in your environment.
+- Before publishing, review `.gitignore` so temporary files, logs, and caches stay out of GitHub.
 
 ## Conclusion
 
-NexusDownloader is a compact media downloader that combines a polished React interface with a FastAPI processing backend. It is a good base for local media download workflows, internal tools, and future expansion into more advanced format handling or deployment support.
+NexusDownloader combines a polished React interface with a FastAPI media-processing backend to create a practical downloader for local use and future expansion. It is simple to run, easy to style, and ready for further features such as authentication, deployment, or expanded media handling.
 
 ## Support
 
-For support, use one of the following:
+For help, feedback, or contributions:
 
-- Open an issue in the GitHub repository.
-- Use the repository discussions or pull requests for questions and improvements.
+- Open a GitHub issue in the repository.
+- Use pull requests for improvements and fixes.
 - Contact the maintainer at: your-email@example.com
 
-Replace the email above with your real support contact before publishing.
+Replace the email above with your real support contact before publishing the repository.
