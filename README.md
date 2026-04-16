@@ -177,6 +177,6 @@ For help, feedback, or contributions:
 
 - Open a GitHub issue in the repository.
 - Use pull requests for improvements and fixes.
-- Contact the maintainer at: your-email@example.com
+- Contact the maintainer at: rohitkr.adak0@gmail.com
 
 Replace the email above with your real support contact before publishing the repository.
