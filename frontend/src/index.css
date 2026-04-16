@@ -1,0 +1,80 @@
+@import "tailwindcss";
+
+/* ---------- Custom Theme ---------- */
+@theme {
+  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+
+  --color-dark-900: #06060a;
+  --color-dark-800: #0c0c14;
+  --color-dark-700: #12121e;
+  --color-dark-600: #1a1a2e;
+  --color-dark-500: #24243a;
+
+  --color-accent-violet: #7c3aed;
+  --color-accent-fuchsia: #d946ef;
+  --color-accent-pink: #ec4899;
+  --color-accent-cyan: #22d3ee;
+  --color-accent-emerald: #34d399;
+
+  --color-glass-white-5: rgba(255, 255, 255, 0.05);
+  --color-glass-white-8: rgba(255, 255, 255, 0.08);
+  --color-glass-white-12: rgba(255, 255, 255, 0.12);
+  --color-glass-white-20: rgba(255, 255, 255, 0.20);
+
+  --animate-fade-in: fade-in 0.7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-slide-up: slide-up 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow-pulse: glow-pulse 4s ease-in-out infinite;
+  --animate-spin-slow: spin 3s linear infinite;
+  --animate-shimmer: shimmer 2s linear infinite;
+}
+
+@keyframes fade-in {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes slide-up {
+  from { opacity: 0; transform: translateY(30px) scale(0.97); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+@keyframes glow-pulse {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 0.7; }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* ---------- Base resets ---------- */
+html {
+  min-width: 320px;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  background-color: var(--color-dark-900);
+  color: #e2e8f0;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+/* Select option styling for dark bg */
+select option {
+  background: #1a1a2e;
+  color: #e2e8f0;
+}
