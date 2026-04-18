@@ -9,6 +9,22 @@ import telegramIcon from './assets/telegram.svg';
 const CONFIGURED_API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '');
 const API_BASE_URL = CONFIGURED_API_BASE_URL || (import.meta.env.DEV ? '/api' : '');
 
+const toUserFacingError = (status, detail) => {
+  if (status === 403) {
+    return 'This media is restricted by the source platform. Try another link or try again later.';
+  }
+
+  if (status === 502) {
+    return 'The source platform denied this request. Please try another link.';
+  }
+
+  if (status >= 500) {
+    return 'The server could not process your request right now. Please try again in a moment.';
+  }
+
+  return detail || 'Download failed.';
+};
+
 const filenameFromHeaders = (response) => {
   const header = response.headers.get('content-disposition');
   if (!header) return 'download';
@@ -93,7 +109,7 @@ function App() {
         } catch {
           detail = await response.text();
         }
-        throw new Error(detail);
+        throw new Error(toUserFacingError(response.status, detail));
       }
 
       // Stream the response to track progress

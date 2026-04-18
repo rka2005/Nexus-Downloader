@@ -1,4 +1,5 @@
 import base64
+import logging
 import os
 import tempfile
 import uuid
@@ -12,6 +13,7 @@ from pydantic import BaseModel
 from yt_dlp.utils import DownloadError
 
 app = FastAPI()
+logger = logging.getLogger("nexus_downloader")
 
 
 def _normalize_origin(origin: str) -> str:
@@ -104,6 +106,17 @@ def download_media(url, media_type, format_choice):
         "quiet": True,
         "noplaylist": True,
         "ffmpeg_location": imageio_ffmpeg.get_ffmpeg_exe(),
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["android", "web"],
+            }
+        },
+        "http_headers": {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+        "retries": 3,
+        "fragment_retries": 3,
     }
 
     if cookie_file_path:
@@ -132,17 +145,15 @@ def download_media(url, media_type, format_choice):
     except DownloadError as exc:
         error_message = str(exc)
         normalized = error_message.lower()
+        logger.warning("yt-dlp error while processing URL: %s", error_message)
 
         if "sign in to confirm" in normalized or "not a bot" in normalized:
             raise HTTPException(
                 status_code=403,
-                detail=(
-                    "YouTube requested account verification for this video. "
-                    "Add cookies in Render using YTDLP_COOKIE_FILE or YTDLP_COOKIES_B64 and retry."
-                ),
+                detail="This media is currently restricted by the source platform and cannot be downloaded right now.",
             )
 
-        raise HTTPException(status_code=502, detail=error_message)
+        raise HTTPException(status_code=502, detail="The source platform did not allow this download request.")
     finally:
         if temporary_cookie_file:
             try:
@@ -175,8 +186,13 @@ async def download(req: DownloadRequest):
 
     except HTTPException:
         raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=str(e))
+    except Exception as exc:
+        request_id = uuid.uuid4().hex[:8]
+        logger.exception("Unhandled download error request_id=%s", request_id)
+        raise HTTPException(
+            status_code=500,
+            detail=f"Unable to process this download right now. Please try again later. (ref: {request_id})",
+        ) from exc
 
 
 @app.get("/")
