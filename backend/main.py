@@ -8,7 +8,7 @@ import imageio_ffmpeg
 import yt_dlp
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from yt_dlp.utils import DownloadError
 
@@ -96,6 +96,21 @@ def _resolve_cookie_file():
     return temp_cookie_file.name, temp_cookie_file.name
 
 
+def _error_response(message: str, code: str, request_id: str | None = None):
+    payload = {
+        "ok": False,
+        "error": {
+            "code": code,
+            "message": message,
+        },
+    }
+
+    if request_id:
+        payload["error"]["requestId"] = request_id
+
+    return JSONResponse(status_code=200, content=payload)
+
+
 def download_media(url, media_type, format_choice):
     file_id = str(uuid.uuid4())
     output_template = os.path.join(DOWNLOAD_FOLDER, f"{file_id}.%(ext)s")
@@ -148,12 +163,16 @@ def download_media(url, media_type, format_choice):
         logger.warning("yt-dlp error while processing URL: %s", error_message)
 
         if "sign in to confirm" in normalized or "not a bot" in normalized:
-            raise HTTPException(
-                status_code=403,
-                detail="This media is currently restricted by the source platform and cannot be downloaded right now.",
+            return _error_response(
+                message="This media is currently restricted by the source platform and cannot be downloaded right now.",
+                code="source_restricted",
             )
 
-        raise HTTPException(status_code=502, detail="The source platform did not allow this download request.")
+        logger.info("yt-dlp rejected download for URL: %s", url)
+        return _error_response(
+            message="The source platform did not allow this download request.",
+            code="source_denied",
+        )
     finally:
         if temporary_cookie_file:
             try:
@@ -178,6 +197,9 @@ async def download(req: DownloadRequest):
     try:
         file_path = download_media(req.url.strip(), req.type, req.format)
 
+        if isinstance(file_path, JSONResponse):
+            return file_path
+
         return FileResponse(
             path=file_path,
             filename=os.path.basename(file_path),
@@ -189,9 +211,10 @@ async def download(req: DownloadRequest):
     except Exception as exc:
         request_id = uuid.uuid4().hex[:8]
         logger.exception("Unhandled download error request_id=%s", request_id)
-        raise HTTPException(
-            status_code=500,
-            detail=f"Unable to process this download right now. Please try again later. (ref: {request_id})",
+        return _error_response(
+            message="Unable to process this download right now. Please try again later.",
+            code="server_error",
+            request_id=request_id,
         ) from exc
 
 

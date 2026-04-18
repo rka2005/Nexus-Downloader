@@ -101,13 +101,20 @@ function App() {
         signal: controller.signal,
       });
 
+      const contentType = response.headers.get('content-type') || '';
+
+      if (contentType.includes('application/json')) {
+        const payload = await response.json();
+        const errorMessage = payload?.error?.message || payload?.detail || 'Download failed.';
+        throw new Error(errorMessage);
+      }
+
       if (!response.ok) {
         let detail = 'Download failed.';
         try {
-          const payload = await response.json();
-          detail = payload.detail || detail;
-        } catch {
           detail = await response.text();
+        } catch {
+          // keep default fallback
         }
         throw new Error(toUserFacingError(response.status, detail));
       }
