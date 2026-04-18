@@ -2,3 +2,4 @@ __pycache__/
 downloads/
 ffmpeg.zip
 .env
+.env.example
