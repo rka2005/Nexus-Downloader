@@ -5,6 +5,7 @@ from pydantic import BaseModel
 import yt_dlp
 import os
 import uuid
+import imageio_ffmpeg
 
 app = FastAPI()
 
@@ -35,6 +36,7 @@ def download_media(url, media_type, format_choice):
         "outtmpl": output_template,
         "quiet": True,
         "noplaylist": True,
+        "ffmpeg_location": imageio_ffmpeg.get_ffmpeg_exe(),
     }
 
     if media_type == "audio":
