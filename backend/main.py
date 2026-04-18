@@ -9,13 +9,49 @@ import imageio_ffmpeg
 
 app = FastAPI()
 
+
+def _normalize_origin(origin: str) -> str:
+    return origin.strip().rstrip("/")
+
+
+def _load_allowed_origins():
+    explicit = os.getenv("FRONTEND_ORIGINS", "")
+    single = os.getenv("FRONTEND_ORIGIN", "")
+
+    origins = []
+    if explicit:
+        origins.extend(_normalize_origin(item) for item in explicit.split(",") if item.strip())
+    if single:
+        origins.append(_normalize_origin(single))
+
+    if not origins:
+        origins = ["http://localhost:5173", "http://127.0.0.1:5173"]
+
+    seen = set()
+    unique_origins = []
+    for origin in origins:
+        if origin and origin not in seen:
+            seen.add(origin)
+            unique_origins.append(origin)
+
+    return unique_origins
+
+
+cors_kwargs = {
+    "allow_origins": _load_allowed_origins(),
+    "allow_credentials": True,
+    "allow_methods": ["*"],
+    "allow_headers": ["*"],
+    "expose_headers": ["Content-Disposition", "Content-Length"],
+}
+
+frontend_origin_regex = os.getenv("FRONTEND_ORIGIN_REGEX")
+if frontend_origin_regex:
+    cors_kwargs["allow_origin_regex"] = frontend_origin_regex.strip()
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[os.getenv("FRONTEND_ORIGIN", "http://localhost:5173")],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-    expose_headers=["Content-Disposition"],
+    **cors_kwargs,
 )
 
 DOWNLOAD_FOLDER = "downloads"
