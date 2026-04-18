@@ -6,7 +6,8 @@ import instagramIcon from './assets/instagram.svg';
 import youtubeIcon from './assets/youtube.svg';
 import telegramIcon from './assets/telegram.svg';
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api';
+const CONFIGURED_API_BASE_URL = import.meta.env.VITE_API_BASE_URL?.trim().replace(/\/+$/, '');
+const API_BASE_URL = CONFIGURED_API_BASE_URL || (import.meta.env.DEV ? '/api' : '');
 
 const filenameFromHeaders = (response) => {
   const header = response.headers.get('content-disposition');
@@ -52,6 +53,11 @@ function App() {
     e.preventDefault();
     if (!url.trim()) {
       setError('Add a valid URL before downloading.');
+      return;
+    }
+
+    if (!API_BASE_URL) {
+      setError('Set VITE_API_BASE_URL to your Render backend URL before deploying to Vercel.');
       return;
     }
 

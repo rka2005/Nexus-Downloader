@@ -141,6 +141,19 @@ uvicorn main:app --reload
 
 The backend will usually run at `http://localhost:8000`.
 
+### Production notes
+
+The backend is production-ready for Render with `yt-dlp` and ffmpeg support. It exposes both `Content-Disposition` and `Content-Length` so the frontend can show filename and download progress correctly across origins.
+
+Set these environment variables in Render:
+
+```env
+FRONTEND_ORIGINS=https://your-frontend.vercel.app
+FRONTEND_ORIGIN_REGEX=https://.*\.vercel\.app
+```
+
+The regex is optional, but it helps if you want to allow Vercel preview deployments without updating the backend for every preview URL.
+
 ### Optional backend environment variable
 
 The backend supports a frontend origin for CORS:
@@ -164,8 +177,31 @@ FRONTEND_ORIGIN=http://localhost:5173
 - Do not commit `backend/downloads/` contents because they are generated at runtime.
 - If the frontend cannot reach the backend, confirm `VITE_API_BASE_URL` and `FRONTEND_ORIGIN` match your local ports.
 - If downloads fail, verify that the pasted URL is supported by `yt-dlp`.
-- If you want broader format conversion support, make sure `ffmpeg` is installed and available in your environment.
+- If you want broader format conversion support, make sure `ffmpeg` is available in your environment. The backend now includes `imageio-ffmpeg` so it can usually resolve an ffmpeg binary automatically.
 - Before publishing, review `.gitignore` so temporary files, logs, and caches stay out of GitHub.
+
+## Deployment
+
+### Frontend on Vercel
+
+Set the frontend root directory to `frontend`, the build command to `npm run build`, and the output directory to `dist`.
+
+Add this environment variable in Vercel:
+
+```env
+VITE_API_BASE_URL=https://your-backend.onrender.com
+```
+
+### Backend on Render
+
+Use the `backend` folder as the service root. A typical Render configuration is:
+
+```bash
+pip install -r requirements.txt
+uvicorn main:app --host 0.0.0.0 --port $PORT
+```
+
+Make sure the backend environment includes your frontend origin so CORS allows the deployed Vercel app to call the API.
 
 ## Conclusion
 
