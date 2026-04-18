@@ -215,7 +215,7 @@ async def download(req: DownloadRequest):
             message="Unable to process this download right now. Please try again later.",
             code="server_error",
             request_id=request_id,
-        ) from exc
+        )
 
 
 @app.get("/")
