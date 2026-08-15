@@ -1,4 +1,5 @@
 import base64
+import glob
 import logging
 import os
 import tempfile
@@ -116,6 +117,12 @@ def download_media(url, media_type, format_choice):
     output_template = os.path.join(DOWNLOAD_FOLDER, f"{file_id}.%(ext)s")
     cookie_file_path, temporary_cookie_file = _resolve_cookie_file()
 
+    def _resolve_downloaded_file() -> str:
+        matches = [path for path in glob.glob(os.path.join(DOWNLOAD_FOLDER, f"{file_id}.*")) if os.path.isfile(path)]
+        if not matches:
+            raise FileNotFoundError("Downloaded file could not be located")
+        return max(matches, key=os.path.getmtime)
+
     ydl_opts = {
         "outtmpl": output_template,
         "quiet": True,
@@ -138,10 +145,21 @@ def download_media(url, media_type, format_choice):
         ydl_opts["cookiefile"] = cookie_file_path
 
     if media_type == "audio":
-        audio_format = format_choice if format_choice in {"m4a", "webm", "best"} else "m4a"
+        audio_format = format_choice if format_choice in {"m4a", "mp3", "wav", "flac", "webm", "best"} else "m4a"
         ydl_opts.update({
-            "format": f"bestaudio[ext={audio_format}]/bestaudio/best" if audio_format in {"m4a", "webm"} else "bestaudio/best",
+            "format": "bestaudio/best",
         })
+
+        if audio_format == "webm":
+            ydl_opts["format"] = "bestaudio[ext=webm]/bestaudio"
+        elif audio_format != "best":
+            ydl_opts["postprocessors"] = [
+                {
+                    "key": "FFmpegExtractAudio",
+                    "preferredcodec": audio_format,
+                    "preferredquality": "0",
+                }
+            ]
 
     elif media_type == "video":
         if format_choice == "mp4":
@@ -180,8 +198,7 @@ def download_media(url, media_type, format_choice):
             except OSError:
                 pass
 
-    if media_type == "video" and format_choice == "mp4":
-        filename = os.path.splitext(filename)[0] + ".mp4"
+    filename = _resolve_downloaded_file()
 
     return filename
 

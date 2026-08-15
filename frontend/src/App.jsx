@@ -221,7 +221,7 @@ function App() {
         {/* ── Header ── */}
         <header className="text-center mb-8 sm:mb-10 px-1">
           <h1 className="text-[clamp(1.65rem,9.5vw,3.75rem)] font-extrabold tracking-tight bg-gradient-to-r from-accent-violet via-accent-fuchsia to-accent-pink bg-clip-text text-transparent leading-[1.08] mb-2 sm:mb-3 drop-shadow-lg break-words [overflow-wrap:anywhere]">
-            Nexus Downloader
+            Rush Media
           </h1>
           <p className="text-sm sm:text-base md:text-lg text-slate-400 font-light max-w-lg mx-auto leading-relaxed">
             Grab video &amp; audio from your favourite platforms — fast, free, and effortless.
