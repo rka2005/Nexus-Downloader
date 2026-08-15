@@ -12,6 +12,9 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from pydantic import BaseModel
 from yt_dlp.utils import DownloadError
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = FastAPI()
 logger = logging.getLogger("nexus_downloader")
