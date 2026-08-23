@@ -2,7 +2,7 @@
 
 /* ---------- Custom Theme ---------- */
 @theme {
-  --font-sans: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-sans: 'DM Sans', system-ui, sans-serif;
 
   --color-dark-900: #06060a;
   --color-dark-800: #0c0c14;
@@ -67,6 +67,12 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.35s ease, color 0.35s ease;
+}
+
+h1,
+h2 {
+  font-family: 'Space Grotesk', var(--font-sans);
 }
 
 *, *::before, *::after {
@@ -77,4 +83,50 @@ body {
 select option {
   background: #1a1a2e;
   color: #e2e8f0;
+}
+
+/* The existing utility classes stay shared between modes; these tokens tune their surfaces for daylight. */
+[data-theme="light"] body {
+  background-color: #f4f5f8;
+  color: #202333;
+}
+
+[data-theme="light"] .bg-dark-900,
+[data-theme="light"] [class*="bg-dark-900"] {
+  background-color: rgba(255, 255, 255, 0.84);
+}
+
+[data-theme="light"] .bg-dark-800,
+[data-theme="light"] [class*="bg-dark-800"] {
+  background-color: rgba(235, 237, 244, 0.88);
+}
+
+[data-theme="light"] [class*="bg-glass-white"] {
+  background-color: rgba(255, 255, 255, 0.72);
+}
+
+[data-theme="light"] [class*="border-glass-white"] {
+  border-color: rgba(32, 35, 51, 0.12);
+}
+
+[data-theme="light"] .text-slate-200,
+[data-theme="light"] .text-slate-300 {
+  color: #272b3d;
+}
+
+[data-theme="light"] .text-slate-400 {
+  color: #62697d;
+}
+
+[data-theme="light"] .text-slate-500 {
+  color: #7c8498;
+}
+
+[data-theme="light"] .text-slate-600 {
+  color: #9aa1b1;
+}
+
+[data-theme="light"] select option {
+  background: #ffffff;
+  color: #272b3d;
 }

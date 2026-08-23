@@ -1,4 +1,4 @@
-import React, { useState, useRef } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import DownloaderForm from './components/DownloaderForm';
 
 import facebookIcon from './assets/facebook.svg';
@@ -43,6 +43,10 @@ const STATUS = {
 };
 
 function App() {
+  const [theme, setTheme] = useState(() => {
+    const savedTheme = window.localStorage.getItem('ownmedia-theme');
+    return savedTheme || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+  });
   const [url, setUrl] = useState('');
   const [mediaType, setMediaType] = useState('video');
   const [formatChoice, setFormatChoice] = useState('mp4');
@@ -56,6 +60,11 @@ function App() {
   const [totalBytes, setTotalBytes] = useState(0);
   const [downloadFilename, setDownloadFilename] = useState('');
   const abortRef = useRef(null);
+
+  useEffect(() => {
+    document.documentElement.dataset.theme = theme;
+    window.localStorage.setItem('ownmedia-theme', theme);
+  }, [theme]);
 
   const formatBytes = (bytes) => {
     if (bytes === 0) return '0 B';
@@ -219,7 +228,20 @@ function App() {
         <div className="absolute inset-x-0 -top-px mx-auto h-px w-3/4 bg-gradient-to-r from-transparent via-accent-violet/60 to-transparent" />
 
         {/* ── Header ── */}
-        <header className="text-center mb-8 sm:mb-10 px-1">
+        <header className="relative text-center mb-8 sm:mb-10 px-1">
+          <button
+            type="button"
+            aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+            onClick={() => setTheme((currentTheme) => currentTheme === 'dark' ? 'light' : 'dark')}
+            className="absolute right-0 top-0 z-10 flex h-10 w-10 items-center justify-center rounded-xl border border-glass-white-12 bg-glass-white-5 text-slate-400 transition-all duration-200 hover:-translate-y-0.5 hover:border-accent-violet/40 hover:text-accent-violet focus:outline-none focus:ring-2 focus:ring-accent-violet/30 cursor-pointer"
+          >
+            {theme === 'dark' ? (
+              <svg aria-hidden="true" className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><circle cx="12" cy="12" r="4" /><path strokeLinecap="round" d="M12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41" /></svg>
+            ) : (
+              <svg aria-hidden="true" className="h-4.5 w-4.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8"><path strokeLinecap="round" strokeLinejoin="round" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" /></svg>
+            )}
+          </button>
           <h1 className="text-[clamp(1.65rem,9.5vw,3.75rem)] font-extrabold tracking-tight bg-gradient-to-r from-accent-violet via-accent-fuchsia to-accent-pink bg-clip-text text-transparent leading-[1.08] mb-2 sm:mb-3 drop-shadow-lg break-words [overflow-wrap:anywhere]">
             Media Downloader
           </h1>
