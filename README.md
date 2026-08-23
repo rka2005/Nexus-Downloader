@@ -1,22 +1,22 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=28&pause=1200&color=0EA5E9&center=true&vCenter=true&width=900&lines=Rush+Media;Download+Audio+and+Video+with+Ease;Fast%2C+Simple%2C+Powerful" alt="Typing animation" />
+  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=600&size=28&pause=1200&color=0EA5E9&center=true&vCenter=true&width=900&lines=Own+Media;Download+Audio+and+Video+with+Ease;Fast%2C+Simple%2C+Powerful" alt="Typing animation" />
 </p>
 
 ```text
-                ┌──────────────────────────────────────────────────────────────┐
-                │                                                              │
-                │     ██████╗ ██╗   ██╗███████╗██╗  ██╗      ███╗   ███╗       │
-                │     ██╔══██╗██║   ██║██╔════╝██║  ██║      ████╗ ████║       │
-                │     ██████╔╝██║   ██║███████╗███████║      ██╔████╔██║       │
-                │     ██╔══██╗██║   ██║╚════██║██╔══██║      ██║╚██╔╝██║       │
-                │     ██║  ██║╚██████╔╝███████║██║  ██║      ██║ ╚═╝ ██║       │
-                │     ╚═╝  ╚═╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝      ╚═╝     ╚═╝       │
-                │                                                              │
-                │     Full-Stack Media Downloader with React + FastAPI         │
-                │                                                              │
-                └──────────────────────────────────────────────────────────────┘
+               ┌──────────────────────────────────────────────────────────────┐
+               │                                                              │
+               │      ██████╗ ██╗    ██╗███╗   ██╗    ███╗   ███╗             │
+               │     ██╔═══██╗██║    ██║████╗  ██║    ████╗ ████║             │
+               │     ██║   ██║██║ █╗ ██║██╔██╗ ██║    ██╔████╔██║             │
+               │     ██║   ██║██║███╗██║██║╚██╗██║    ██║╚██╔╝██║             │
+               │     ╚██████╔╝╚███╔███╔╝██║ ╚████║    ██║ ╚═╝ ██║             │
+               │      ╚═════╝  ╚══╝╚══╝ ╚═╝  ╚═══╝    ╚═╝     ╚═╝             │
+               │                                                              │
+               │      Full-Stack Media Downloader with React + FastAPI        │
+               │                                                              │
+               └──────────────────────────────────────────────────────────────┘
 
-Rush Media is a full-stack media downloader that lets you paste a supported link, choose audio or video output, and download the processed file through a polished browser interface. The frontend is built with React and Vite, while the backend uses FastAPI and `yt-dlp` to fetch and serve the media.
+Own Media is a full-stack media downloader that lets you paste a supported link, choose audio or video output, and download the processed file through a polished browser interface. The frontend is built with React and Vite, while the backend uses FastAPI and `yt-dlp` to fetch and serve the media.
 
 ## Overview
 
@@ -29,7 +29,7 @@ The result is a lightweight and responsive local downloader that is easy to run,
 
 ## Purpose
 
-The goal of Rush Media is to provide a simple workflow for:
+The goal of Own Media is to provide a simple workflow for:
 
 - Downloading supported media from a pasted URL.
 - Switching between video and audio output.
@@ -206,7 +206,7 @@ Make sure the backend environment includes your frontend origin so CORS allows t
 
 ## Conclusion
 
-Rush Media combines a polished React interface with a FastAPI media-processing backend to create a practical downloader for local use and future expansion. It is simple to run, easy to style, and ready for further features such as authentication, deployment, or expanded media handling.
+Own Media combines a polished React interface with a FastAPI media-processing backend to create a practical downloader for local use and future expansion. It is simple to run, easy to style, and ready for further features such as authentication, deployment, or expanded media handling.
 
 ## Support
 
